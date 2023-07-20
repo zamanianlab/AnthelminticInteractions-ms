@@ -1017,7 +1017,8 @@ ann_text_L_sqrt_norm_min <- data.frame(lab = "EC[50] *=* 7.20", treatment = fact
           n2_plot_norm_min,
           n2_plot_sqrt_norm_DMSO,
           n2_plot_sqrt_norm_min,
-          nrow = 2, ncol = 2, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2), base_height = 10, base_width = 14))
+          nrow = 2, ncol = 2, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2), base_height = 10, base_width = 14) +
+    theme(plot.background = element_rect(fill = 'white')))
 
-ggsave(here('/Users/elenagarncarz/Desktop/Supp_Fig_1_updated.pdf'), combined_plot, width = 500, height = 300, units = 'mm')
+ggsave(here('/Users/elenagarncarz/Desktop/Supp_Fig_1_updated.tiff'), combined_plot, width = 500, height = 250, units = 'mm')
 ggsave(here('/Users/elenagarncarz/Desktop/Supp_Fig_1_updated.png'), combined_plot, width = 500, height = 300, units = 'mm')

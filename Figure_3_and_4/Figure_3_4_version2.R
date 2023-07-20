@@ -26,14 +26,14 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 
 # analysis ----------------------------------------------------------------
-print(here())
+
 # sqrt transform of poisson distribution
 trans_data <- read_rds(here('data_EGR/iso_data_EGR.rds'))%>% 
   #trans_data <- read_rds('/Users/mzamanian/Library/CloudStorage/Box-Box/ZamanianLab/LabMembers/Nic/project-drug_access/data_EGR/iso_data_EGR.rds') %>% 
   mutate(sqrt_length = sqrt(area_shape_major_axis_length)) %>%
   rename(raw_length = area_shape_major_axis_length) %>%
   select(plate, well, conc1, conc2, strains, treatment1, treatment2, metadata_date, raw_length, sqrt_length)
-
+trans_data2 <- trans_data %>% select(plate) %>% unique()
 # DMSO length for normalization
 DMSO_mean <- trans_data %>%
   filter(treatment1 %in% c('DMSO', 'Untreated')) %>%
@@ -152,7 +152,7 @@ synergy <- normalized_data %>%
     labs(x = 'Albendazole sulfoxide (µM)', y = 'Levamisole (µM)', fill = 'Worm length\n(% control)', tag = "A") +
     #theme_dark() +
     theme(
-      legend.position = 'right',
+      legend.position = 'none',
       legend.title = element_text(hjust = 0.5),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
@@ -309,7 +309,7 @@ azs_lev_responses <- data.frame(azs_lev_s_res_norm_DMSO$response) %>%
     facet_grid(cols = vars(genotype)) +
     labs(x = 'Albendazole sulfoxide (µM)', y = 'Levamisole (µM)', fill = 'ZIP synergy\n(% expected\nresponse)', tag = "A") +
     theme(
-      legend.position = 'right',
+      legend.position = 'none',
       legend.title = element_text(hjust = 0.5),
       legend.text = element_text(angle = 45),
       panel.grid.major = element_blank(),
@@ -366,7 +366,7 @@ azs_lev_responses <- data.frame(azs_lev_s_res_norm_DMSO$response) %>%
    labs(x = 'Albendazole sulfoxide (µM)', y = 'Ivermectin (µM)', fill = 'Worm length', tag = "B") +
    theme_dark() +
    theme(
-     legend.position = 'right',
+     legend.position = 'none',
      panel.grid.major = element_blank(),
      panel.grid.minor = element_blank(),
      strip.text.x = element_blank(),
@@ -524,7 +524,7 @@ azs_ivm_responses <- data.frame(azs_ivm_s_res_norm_DMSO$response) %>%
     labs(x = 'Albendazole sulfoxide (µM)', y = 'Ivermectin (µM)', fill = 'ZIP synergy\n(% expected\nresponse)', tag = "B") +
     theme_dark() +
     theme(
-      legend.position = 'right',
+      legend.position = 'none',
       legend.title = element_text(hjust = 0.5),
       legend.text = element_text(angle = 45),
       panel.grid.major = element_blank(),
@@ -580,7 +580,7 @@ azs_ivm_responses <- data.frame(azs_ivm_s_res_norm_DMSO$response) %>%
    labs(x = 'Levamisole (µM)', y = 'Ivermectin (µM)', fill = 'Worm length\n(% control)', tag = "C") +
    #theme_dark() +
    theme(
-     legend.position = 'right',
+     legend.position = 'bottom',
      legend.title = element_text(hjust = 0.5),
      panel.grid.major = element_blank(),
      panel.grid.minor = element_blank(),
@@ -741,7 +741,7 @@ ivm_lev_responses <- data.frame(ivm_lev_s_res_norm_DMSO$response) %>%
     labs(x = 'Levamisole (µM)', y = 'Ivermectin (µM)', fill = 'ZIP synergy\n(% expected\nresponse)', tag = "C") +
     #theme_dark() +
     theme(
-      legend.position = 'right',
+      legend.position = 'bottom',
       legend.title = element_text(hjust = 0.5),
       legend.text = element_text(angle = 20),
       panel.grid.major = element_blank(),
@@ -829,56 +829,74 @@ ivm_lev_responses <- data.frame(ivm_lev_s_res_norm_DMSO$response) %>%
 #   unique() %>%
 #   na.omit()
 
-save_plot(here('plots_EGR/Figure_3/Figure_3_updated.pdf'),
-          plot_grid(azs_lev_norm_DMSO + remove_legend(),
-                    azs_ivm_norm_DMSO + remove_legend(),
-                    ivm_lev_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+(Fig_3_combined <-  plot_grid(azs_lev_norm_DMSO, azs_ivm_norm_DMSO, ivm_lev_norm_DMSO,
+                             nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+  theme(plot.background = element_rect(fill = 'white'),
+        plot.margin = unit(c(0.05, 0.05, 0.05, 0.05),
+                           "inches")))
+
+(Fig_4_combined <-  plot_grid(azs_lev_syn_plot_norm_DMSO, azs_ivm_syn_plot_norm_DMSO, ivm_lev_syn_plot_norm_DMSO,
+                              nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+    theme(plot.background = element_rect(fill = 'white'),
+          plot.margin = unit(c(0.05, 0.05, 0.05, 0.05),
+                             "inches")))
+
+ggsave(here('/Users/elenagarncarz/Desktop/Figure_3_updated.tiff'), Fig_3_combined, width = 300, height = 200, units = 'mm', bg = "white")
+
+ggsave(here('/Users/elenagarncarz/Desktop/Figure_4_updated.tiff'), Fig_4_combined, width = 300, height = 200, units = 'mm', bg = "white")
 
 save_plot(here('plots_EGR/Figure_3/Figure_3_updated.png'),
           plot_grid(azs_lev_norm_DMSO + remove_legend(),
                     azs_ivm_norm_DMSO + remove_legend(),
                     ivm_lev_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+            theme(plot.background = element_rect(fill = 'white')), base_height = 10, base_width = 14)
 
 save_plot(here('plots_EGR/Figure_4/Figure_4_updated.pdf'),
           plot_grid(azs_lev_syn_plot_norm_DMSO + remove_legend(),
                     azs_ivm_syn_plot_norm_DMSO + remove_legend(),
                     ivm_lev_syn_plot_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+            theme(plot.background = element_rect(fill = 'white')), base_height = 10, base_width = 14)
 
 save_plot(here('plots_EGR/Figure_4/Figure_4_updated.png'),
           plot_grid(azs_lev_syn_plot_norm_DMSO + remove_legend(),
                     azs_ivm_syn_plot_norm_DMSO + remove_legend(),
                     ivm_lev_syn_plot_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+            theme(plot.background = element_rect(fill = 'white')), base_height = 10, base_width = 14)
 # combine plots -----------------------------------------------------------
 save_plot(here('plots_EGR/Figure_3/Figure_3_updated.pdf'),
           plot_grid(azs_lev_norm_DMSO + remove_legend(),
                     azs_ivm_norm_DMSO + remove_legend(),
                     ivm_lev_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+            theme(plot.background = element_rect(fill = 'white')), base_height = 10, base_width = 14)
 
 save_plot(here('plots_EGR/Figure_3/Figure_3_updated.png'),
           plot_grid(azs_lev_norm_DMSO + remove_legend(),
                     azs_ivm_norm_DMSO + remove_legend(),
                     ivm_lev_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+            theme(plot.background = element_rect(fill = 'white')), base_height = 10, base_width = 14)
 
 save_plot(here('Desktop/all_fit_mean_norm_DMSO_updated.pdf'),
           plot_grid(azs_lev_fit_plot_norm_DMSO + remove_legend(),
                     azs_ivm_fit_plot_norm_DMSO + remove_legend(),
                     ivm_lev_fit_plot_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+            theme(plot.background = element_rect(fill = 'white')), base_height = 10, base_width = 14)
 
 save_plot(here('plots_EGR/Figure_4/Figure_4_updated.pdf'),
           plot_grid(azs_lev_syn_plot_norm_DMSO + remove_legend(),
                     azs_ivm_syn_plot_norm_DMSO + remove_legend(),
                     ivm_lev_syn_plot_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+            theme(plot.background = element_rect(fill = 'white')), base_height = 10, base_width = 14)
 
 save_plot(here('plots_EGR/Figure_4/Figure_4_updated.png'),
           plot_grid(azs_lev_syn_plot_norm_DMSO + remove_legend(),
                     azs_ivm_syn_plot_norm_DMSO + remove_legend(),
                     ivm_lev_syn_plot_norm_DMSO + theme(legend.position = 'bottom'),
-                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)), base_height = 10, base_width = 14)
+                    nrow = 3, align = 'h', axis = 'l', rel_heights = c(1, 1, 1.2)) + 
+            theme(plot.background = element_rect(fill = 'white')), base_height = 10, base_width = 14)

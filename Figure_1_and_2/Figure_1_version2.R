@@ -480,13 +480,14 @@ ann_text_L <- data.frame(lab = "EC[50] *=* 6.83", treatment = factor('Levamisole
     NULL)
 
 
-#ggsave(here('/Users/elenagarncarz/Desktop/Fig_1_curves.pdf'), n2_plot, width = 450, height = 200, units = 'mm')
-#ggsave(here('/Users/elenagarncarz/Desktop/Fig_1_curves.png'), n2_plot, width = 450, height = 200, units = 'mm')
+ggsave(here('/Users/elenagarncarz/Desktop/Fig_1_curves.pdf'), n2_plot, width = 450, height = 200, units = 'mm')
+ggsave(here('/Users/elenagarncarz/Desktop/Fig_1_curves.png'), n2_plot, width = 450, height = 200, units = 'mm')
 
 (Fig_1_combined <- plot_grid(control_well_plot_n2, n2_plot, align = "h", axis = 'b', rel_widths = c(1, 4.5)))
 #print(here())
-ggsave(here('plots_EGR/Figure_1/Figure_1_updated.pdf'), Fig_1_combined, width = 240, height = 80, units = 'mm')
-ggsave(here('plots_EGR/Figure_1/Figure_1_updated.png'), Fig_1_combined, width = 240, height = 80, units = 'mm')
+ggsave(here('/Users/elenagarncarz/Desktop/Figure_1_updated.tiff'), Fig_1_combined, width = 225, height = 100, units = 'mm', bg = "white")
+ggsave(here('/Users/elenagarncarz/Desktop/Figure_1_updated.pdf'), Fig_1_combined, width = 225, height = 100, units = 'mm', bg = "white")
+ggsave(here('/Users/elenagarncarz/Desktop/Figure_1_updated.png'), Fig_1_combined, width = 225, height = 100, units = 'mm', bg = "white")
 
 ec50s_averages <- ec50_norm_DMSO %>%
   group_by(treatment) %>%

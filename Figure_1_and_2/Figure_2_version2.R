@@ -579,9 +579,12 @@ predict_all <- newdata %>%
 
 (curve_plots_combined <- plot_grid(curve_plot_digestive, curve_plot_cuticle, curve_plot_amphid, align = "h", rel_widths = c(1, 1, 1), nrow = 1))
 
-ggsave(here('plots_EGR/Figure_2/Figure_2.pdf'), curve_plots_combined, width = 400, height = 120, units = 'mm')
-ggsave(here('plots_EGR/Figure_2/Figure_2.png'), curve_plots_combined, width = 400, height = 120, units = 'mm')
+ggsave(here('plots_EGR/Figure_2/Figure_2.pdf'), curve_plots_combined, width = 300, height = 90, units = 'mm')
+ggsave(here('plots_EGR/Figure_2/Figure_2.png'), curve_plots_combined, width = 300, height = 90, units = 'mm')
 
+ggsave(here('/Users/elenagarncarz/Desktop/Figure_2_updated.tiff'), curve_plots_combined, width = 300, height = 90, units = 'mm', bg = "white")
+ggsave(here('/Users/elenagarncarz/Desktop/Figure_2_updated.pdf'), curve_plots_combined, width = 225, height = 100, units = 'mm', bg = "white")
+ggsave(here('/Users/elenagarncarz/Desktop/Figure_2_updated.png'), curve_plots_combined, width = 225, height = 100, units = 'mm', bg = "white")
 # #get all EC values
 # AZS_ECs <- ED(curves_all[[4]][[1]], c(10,50,90), interval="delta", type="relative")
 # AZS_ECs <- as.data.frame(AZS_ECs) %>%
